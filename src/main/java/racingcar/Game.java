@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 public class Game {
 	private final Player player;
+	private List<Car> cars;
+	private Integer repeat;
 
 	public Game(Player player) {
 		this.player = player;
@@ -17,7 +19,7 @@ public class Game {
 		promptRepeatInput();
 
 		printPlayAnnouncement();
-		for (int i = 0; i < player.getRepeat(); i++) {
+		for (int i = 0; i < repeat; i++) {
 			proceed();
 			printCurrentScore();
 		}
@@ -27,7 +29,7 @@ public class Game {
 	}
 
 	private void proceed() {
-		for (Car car : player.getCars()) {
+		for (Car car : cars) {
 			if (Randoms.pickNumberInRange(0, 9) >= 4) {
 				car.increaseScore();
 			}
@@ -35,20 +37,19 @@ public class Game {
 	}
 
 	private List<Car> selectWinners() {
-		Integer max = player.getCars().stream().max(Car::compare).orElseThrow().getScore();
-		System.out.println(max);
+		Integer max = cars.stream().max(Car::compare).orElseThrow().getScore();
 
-		return player.getCars().stream().filter(car -> car.getScore().equals(max)).collect(Collectors.toList());
+		return cars.stream().filter(car -> car.getScore().equals(max)).collect(Collectors.toList());
 	}
 
 	private void promptCarsInput() {
 		System.out.println("경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분)");
-		player.inputCars();
+		cars = player.inputCars();
 	}
 
 	private void promptRepeatInput() {
 		System.out.println("시도할 회수는 몇회인가요?");
-		player.inputRepeat();
+		repeat = player.inputRepeat();
 	}
 
 	private void printPlayAnnouncement() {
@@ -56,7 +57,7 @@ public class Game {
 	}
 
 	private void printCurrentScore() {
-		for (Car car: player.getCars()) {
+		for (Car car : cars) {
 			System.out.println(car.toString());
 		}
 		System.out.println();
